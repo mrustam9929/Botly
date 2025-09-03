@@ -16,6 +16,8 @@ DJANGO = [
 ]
 APPS = [
     'apps.users',
+    'apps.companies',
+    'apps.naff'
 ]
 LIBS = [
 ]
