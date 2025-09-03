@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "NIFF"
+name = "Botly"
 version = "0.1.0"
 description = ""
 authors = ["Rustam <mrustam9929@gmial.com>"]
