@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "NIFF"
+version = "0.1.0"
+description = ""
+authors = ["Rustam <mrustam9929@gmial.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5"
+python-dotenv = "^1.0.1"
+loguru = "^0.7.2"
+psycopg2-binary = "^2.9.9"
+gunicorn = "^21.2.0"
+pyjwt = "^2.8.0"
+pytelegrambotapi = "^4.26.0"
+redis = "^5.2.1"
+django-cors-headers = "^4.7.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
