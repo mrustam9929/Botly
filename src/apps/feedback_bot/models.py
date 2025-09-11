@@ -29,13 +29,13 @@ class FbbUser(models.Model):
 
     class Meta:
         db_table = 'feedback_bot__users'
-        unique_together = (('company', 'tg_id'),)
+        unique_together = (('bot', 'tg_id'),)
 
 
 class UserFeedBack(models.Model):
     user = models.ForeignKey(FbbUser, on_delete=models.CASCADE, related_name='feedbacks')
     tg_message_id = models.CharField(max_length=255, null=True)
-    message_type = models.CharField(max_length=10, choices=BotMessageTypes.choices)
+    message_type = models.CharField(max_length=11, choices=BotMessageTypes.choices)
     text = models.TextField()
     file_id = models.CharField(max_length=255, null=True)
     video_id = models.CharField(max_length=255, null=True)
