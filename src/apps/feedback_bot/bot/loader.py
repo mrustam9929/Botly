@@ -1,20 +1,9 @@
 import telebot
-from django.conf import settings
-from telebot.storage import StateRedisStorage
 
-from apps.companies.services import BaseBotLoader
-
-bot = telebot.TeleBot(
-    settings.TG_BOT_TOKEN,
-    state_storage=StateRedisStorage(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        db=1
-    )
-)
+from apps.companies.services import BotBuilder
 
 
-class FeedbackBotLoader(BaseBotLoader):
+class FeedbackBotBuilder(BotBuilder):
 
-    def get_bot(self):
-        return bot
+    def register_handlers(self, bot: telebot.TeleBot):
+        pass
