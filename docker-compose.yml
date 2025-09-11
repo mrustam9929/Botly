@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: deploy/docker/backend/Dockerfile
-    image: ceramic-go/backend:latest
+    image: botly/backend:latest
     restart: unless-stopped
     command: >
       sh -c "python manage.py collectstatic --noinput &&
@@ -19,9 +19,9 @@ services:
     env_file:
       - .env
     volumes:
-      - .mounts/backend/static:/src/static:rw
-      - .mounts/backend/media:/src/media:rw
-      - .mounts/backend/logs:/src/logs:rw
+      - ./src/static:/src/static:rw
+      - ./src/media:/src/media:rw
+      - ./src/logs:/src/logs:rw
     cap_add:
       - ALL
 
@@ -29,24 +29,24 @@ services:
     build:
       context: .
       dockerfile: deploy/docker/postgres/Dockerfile
-    image: ceramic-go/db:latest
+    image: botly/db:latest
     restart: unless-stopped
     volumes:
-      - .mounts/db:/var/lib/postgresql/data:rw
+      - postgres_data:/var/lib/postgresql/data:rw
     env_file:
       - .env
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    expose:
-      - 5432
+    ports:
+      - "5432:5432"
 
   redis:
     build:
       context: .
       dockerfile: deploy/docker/redis/Dockerfile
-    image: ceramic-go/redis:latest
+    image: botly/redis:latest
     restart: unless-stopped
     privileged: true
     env_file:
@@ -54,8 +54,12 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - .mounts/redis/db:/data
-      - .mounts/redis/conf:/conf
+      - redis_data:/data
+      - redis_conf:/conf
     expose:
       - 6379
 
+volumes:
+  redis_data:
+  redis_conf:
+  postgres_data:

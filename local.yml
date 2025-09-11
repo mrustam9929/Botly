@@ -5,10 +5,10 @@ services:
     build:
       context: .
       dockerfile: deploy/docker/postgres/Dockerfile
-    image: ceramic-go/db:latest
+    image: botly/db:latest
     restart: unless-stopped
     volumes:
-      - .mounts/db:/var/lib/postgresql/data:rw
+      - postgres_data:/var/lib/postgresql/data:rw
     env_file:
       - .env
     environment:
@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: deploy/docker/redis/Dockerfile
-    image: ceramic-go/redis:latest
+    image: botly/redis:latest
     restart: unless-stopped
     privileged: true
     env_file:
@@ -30,8 +30,12 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
-      - .mounts/redis/db:/data
-      - .mounts/redis/conf:/conf
-    ports:
-      - "6379:6379"
+      - redis_data:/data
+      - redis_conf:/conf
+    expose:
+      - 6379
 
+volumes:
+  redis_data:
+  redis_conf:
+  postgres_data:
