@@ -1,0 +1,17 @@
+import json
+import telebot
+from django.http import JsonResponse
+from api.telegram.services import BotService
+from core.settings import logger
+
+
+def webhook(request, pk):
+    if request.method == "POST":
+        try:
+            json_data = json.loads(request.body.decode("utf-8"))
+            bot = BotService.get_bot(pk)
+            bot.process_new_updates([telebot.types.Update.de_json(json_data)])
+        except Exception as e:
+            logger.error(e)
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
