@@ -17,7 +17,7 @@ DJANGO = [
 APPS = [
     'apps.users',
     'apps.companies',
-    'apps.naff'
+    'apps.feedback_bot'
 ]
 LIBS = [
 ]
@@ -103,3 +103,7 @@ REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 
 # endregion
+
+TELEGRAM_WEBHOOK_URL = os.getenv('TELEGRAM_WEBHOOK_URL')
+
+FERNET_KEY = os.getenv('FERNET_KEY', "")

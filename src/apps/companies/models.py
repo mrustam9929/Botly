@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from apps.companies.enums import BotModules
@@ -28,3 +29,7 @@ class CompanyBot(models.Model):
     @token.setter
     def token(self, value):
         self._token = value
+
+    @property
+    def webhook_url(self) -> str:
+        return f"{settings.TELEGRAM_WEBHOOK_URL}/{self.id}/"
