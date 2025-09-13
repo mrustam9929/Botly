@@ -6,8 +6,11 @@ class BotModules(models.TextChoices):
 
 
 class BotMessageTypes(models.TextChoices):
-    TEXT = 'TEXT'
-    FILE = 'FILE'
-    VOICE = 'VOICE'
-    VIDEO = 'VIDEO'
-    VOICE_VIDEO = 'VOICE_VIDEO'
+    TEXT = 'text'
+    AUDIO = 'audio'
+    DOCUMENT = 'document'
+    PHOTO = 'photo'
+    VIDEO = 'video'
+    VIDEO_NOTE = 'video_note'
+    VOICE = 'voice'
+

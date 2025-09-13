@@ -24,4 +24,5 @@ class Command(BaseCommand):
         bot.infinity_polling(
             timeout=60,
             long_polling_timeout=30,
+            logger_level=20
         )
