@@ -2,13 +2,16 @@ from django.conf import settings
 from django.db import models
 
 from apps.companies.enums import BotModules
+from services.security import token_cipher
 
 
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True)
-
+    owner = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, related_name='companies')
     class Meta:
         db_table = 'companies'
+        verbose_name = 'Компания'
+        verbose_name_plural = 'Компании'
 
 
 class CompanyBot(models.Model):
@@ -21,14 +24,16 @@ class CompanyBot(models.Model):
 
     class Meta:
         db_table = 'companies_bot'
+        verbose_name = 'Бот'
+        verbose_name_plural = 'Боты'
 
     @property
     def token(self) -> str:
-        return self._token
+        return token_cipher.decrypt(self._token)
 
     @token.setter
     def token(self, value):
-        self._token = value
+        self._token = token_cipher.encrypt(value)
 
     @property
     def webhook_url(self) -> str:
