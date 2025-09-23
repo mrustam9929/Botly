@@ -1,10 +1,12 @@
 import json
 import telebot
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
 from api.telegram.services import get_bot
 from core.settings import logger
 
-
+@csrf_exempt
 def webhook(request, pk):
     if request.method == "POST":
         try:
