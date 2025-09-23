@@ -10,7 +10,7 @@ from apps.feedback_bot.models import FbbSettings, FbbUser, UserFeedBack
 def register(bot: telebot.TeleBot, company_bot: CompanyBot, **kwargs):
     bot_settings = FbbSettings.objects.get(bot=company_bot)
 
-    @bot.message_handler(commands=["start"])
+    @bot.message_handler(commands=["start"], chat_types=['private',])
     def handle_start(message: Message):
         bot.send_message(
             message.chat.id,
@@ -49,6 +49,23 @@ def register(bot: telebot.TeleBot, company_bot: CompanyBot, **kwargs):
                 )
                 if parent is None:
                     parent = feedback
+            for chat_id in bot_settings.feedback_send_chat_ids:
+                for msg in messages:
+                    text = f"📩 Новый отзыв\n" \
+                           f"👤 @{message.from_user.username or '-'}\n" \
+                           f"📝 Тип: {msg['message_type']}\n"
+                    if msg['message_type'] == 'text':
+                        text += f"🧾 Сообщение: {msg['text']}"
+                        bot.send_message(chat_id, text)
+                    elif msg['message_type'] in ['photo', 'video', 'voice', 'document']:
+                        if msg['message_type'] == 'photo':
+                            bot.send_photo(chat_id, msg['file_id'], caption=text)
+                        elif msg['message_type'] == 'video':
+                            bot.send_video(chat_id, msg['file_id'], caption=text)
+                        elif msg['message_type'] == 'voice':
+                            bot.send_voice(chat_id, msg['file_id'], caption=text)
+                        elif msg['message_type'] == 'document':
+                            bot.send_document(chat_id, msg['file_id'], caption=text)
 
         bot.send_message(message.chat.id, bot_settings.feedback_confirm_text)
         bot.delete_state(message.chat.id)
