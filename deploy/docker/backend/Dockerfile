@@ -1,39 +1,30 @@
-FROM python:3.12.0b1-slim-buster AS development_build
+FROM python:3.12-slim-bookworm AS build
 
-ARG DJANGO_ENV
-
+ARG DJANGO_ENV=development
 ENV DJANGO_ENV=${DJANGO_ENV} \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=1.8.3 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_CACHE_DIR=/var/cache/pypoetry
 
-  PYTHONFAULTHANDLER=1 \
-  PYTHONUNBUFFERED=1 \
-  PYTHONHASHSEED=random \
-  # pip:
-  PIP_NO_CACHE_DIR=off \
-  PIP_DISABLE_PIP_VERSION_CHECK=on \
-  PIP_DEFAULT_TIMEOUT=100 \
-  # poetry:
-  POETRY_VERSION=1.4.2 \
-  POETRY_VIRTUALENVS_CREATE=false \
-  POETRY_CACHE_DIR='/var/cache/pypoetry'
-
-# System deps:
 RUN apt-get update \
-  && apt-get install --no-install-recommends -y \
-    bash \
-    build-essential \
-    curl \
-    gettext \
-    git \
-    libpq-dev \
-    wget \
-  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
-  && pip install "poetry==$POETRY_VERSION" && poetry --version
+    && apt-get install --no-install-recommends -y \
+       bash build-essential curl gettext git libpq-dev wget \
+    && rm -rf /var/lib/apt/lists/*
 
-# set work directory
-WORKDIR /src
-COPY pyproject.toml poetry.lock /src/
+RUN python -m pip install --upgrade pip \
+    && pip install "poetry==${POETRY_VERSION}" \
+    && poetry --version
 
-# Install dependencies:
-RUN poetry install
-# copy project
-COPY /src .
+WORKDIR /app
+
+COPY pyproject.toml poetry.lock* /app/
+
+RUN poetry install --no-interaction --no-ansi --no-root
+
+COPY . /app
