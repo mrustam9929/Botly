@@ -21,10 +21,7 @@ RUN python -m pip install --upgrade pip \
     && pip install "poetry==${POETRY_VERSION}" \
     && poetry --version
 
-WORKDIR /app
-
-COPY pyproject.toml poetry.lock* /app/
-
-RUN poetry install --no-interaction --no-ansi --no-root
-
-COPY . /app
+WORKDIR /src
+COPY pyproject.toml poetry.lock /src/
+RUN poetry install
+COPY /src .
